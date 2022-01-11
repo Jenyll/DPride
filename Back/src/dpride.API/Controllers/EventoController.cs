@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dpride.API.Data;
 using dpride.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,40 +13,24 @@ namespace dpride.API.Controllers
     [Route("[controller]")]
     public class EventoController : ControllerBase
     {
-        public IEnumerable<Evento> _evento = new Evento[]{
+        private readonly DataContext context;
 
-            new Evento(){
-            EventoId = 1,
-            Tema = "Angular",
-            Local = "BH",
-            QtdPessoas = 250,
-            DataEvento = DateTime.Now.AddDays(2).ToString("dd/MM/yyyy")
-            },
-
-            new Evento(){
-            EventoId = 3,
-            Tema = "Angular",
-            Local = "SP",
-            QtdPessoas = 500,
-            DataEvento = DateTime.Now.AddDays(2).ToString("dd/MM/yyyy")
-            }
-        };
-
-        public EventoController()
+        public EventoController(DataContext context)
         {
+            this.context = context;
 
         }
 
         [HttpGet]
         public IEnumerable<Evento> Get()
         {
-            return _evento;
+            return this.context.Eventos;
         }
 
         [HttpGet("{id}")]
-        public IEnumerable<Evento> GetById(int id)
+        public Evento GetById(int id)
         {
-            return _evento.Where(evento => evento.EventoId == id);
+            return this.context.Eventos.FirstOrDefault(evento => evento.EventoId == id);
         }
 
         [HttpPost]
